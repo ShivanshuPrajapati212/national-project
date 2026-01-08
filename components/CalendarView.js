@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import './calendar.css';
+import '../app/calendar/calendar.css';
 import { addEvent } from "@/app/actions/event";
 
 export default function CalendarPage({ events, userRole }) {
