@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import ImageKit from "imagekit";
 
 const imagekit = new ImageKit({
-    publicKey: process.env.NEXT_IMAGEKIT_PUBLIC_KEY, // Note: User might have used NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY in .env, checking both
+    publicKey: process.env.NEXT_PUBLIC_PUBLIC_KEY || process.env.NEXT_IMAGEKIT_PUBLIC_KEY,
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
     urlEndpoint: process.env.NEXT_IMAGEKIT_URL_ENDPOINT,
 });
