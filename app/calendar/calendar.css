@@ -1,0 +1,35 @@
+
+/* Override react-calendar default styles to match DaisyUI */
+.react-calendar {
+  width: 100% !important;
+  background-color: transparent !important;
+  font-family: inherit !important;
+  border: none !important;
+}
+
+.react-calendar__tile {
+  padding: 1rem 0.5rem !important;
+  border-radius: 0.5rem;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity))) !important;
+}
+
+.react-calendar__tile--now {
+  background: var(--fallback-p,oklch(var(--p)/0.2)) !important;
+  color: var(--fallback-pc,oklch(var(--pc)/1)) !important;
+}
+
+.react-calendar__tile--active {
+  background: var(--fallback-p,oklch(var(--p)/1)) !important;
+  color: var(--fallback-pc,oklch(var(--pc)/1)) !important;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}

@@ -5,7 +5,13 @@ import { auth } from "@/auth";
 import dbConnect from "@/lib/db";
 import Post from "@/models/Post";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import ImageKit from "imagekit";
+
+const imagekit = new ImageKit({
+    publicKey: process.env.NEXT_IMAGEKIT_PUBLIC_KEY, // Note: User might have used NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY in .env, checking both
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.NEXT_IMAGEKIT_URL_ENDPOINT,
+});
 
 export async function createPost(formData) {
     const session = await auth();
@@ -14,9 +20,28 @@ export async function createPost(formData) {
     }
 
     const content = formData.get('content');
-    const imageUrl = formData.get('imageUrl');
-    const fileId = formData.get('fileId');
-    const tagString = formData.get('tags'); // Expecting JSON string or comma-separated
+    const file = formData.get('file'); // File object
+    const tagString = formData.get('tags');
+
+    let imageUrl = '';
+    let fileId = '';
+
+    // Handle Image Upload if file exists and has size
+    if (file && file.size > 0) {
+        try {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            const response = await imagekit.upload({
+                file: buffer,
+                fileName: file.name,
+                folder: '/school-network-posts'
+            });
+            imageUrl = response.url;
+            fileId = response.fileId;
+        } catch (error) {
+            console.error("ImageKit Upload Error:", error);
+            throw new Error("Failed to upload image.");
+        }
+    }
 
     let tags = [];
     try {

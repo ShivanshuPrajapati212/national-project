@@ -1,48 +1,16 @@
 
 'use client'
 
-import { ImageKitContext, IKUpload } from "imagekitio-next";
 import { useState } from "react";
 import { createPost } from "@/app/actions/post";
 
-const authenticator = async () => {
-    try {
-        const response = await fetch("/api/imagekit/auth");
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Request failed with status ${response.status}: ${errorText}`);
-        }
-        const data = await response.json();
-        const { signature, expire, token } = data;
-        return { signature, expire, token };
-    } catch (error) {
-        throw new Error(`Authentication request failed: ${error.message}`);
-    }
-};
-
 export default function CreatePost() {
     const [content, setContent] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
-    const [fileId, setFileId] = useState('');
+    const [file, setFile] = useState(null);
     const [tags, setTags] = useState([]);
-    const [uploading, setUploading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const availableTags = ['#Sports', '#Academics', '#Art', '#Fest', '#General'];
-
-    const handleSuccess = (res) => {
-        setImageUrl(res.url);
-        setFileId(res.fileId);
-        setUploading(false);
-    };
-
-    const handleError = (err) => {
-        console.error('Upload Error', err);
-        setUploading(false);
-    };
-
-    const handleUploadStart = () => {
-        setUploading(true);
-    };
 
     const toggleTag = (tag) => {
         if (tags.includes(tag)) {
@@ -52,18 +20,23 @@ export default function CreatePost() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        // We are using a form action but we need to inject the client-side state
-        // We can do this by using hidden inputs or calling the action programmatically.
-        // Let's use hidden inputs for the form submission to be simple.
+    const handleSubmit = async (formData) => {
+        setIsSubmitting(true);
 
-        // Reset after submit (this happens automatically if we used useOptimistic but simple reset works for now)
-        setTimeout(() => {
-            setContent('');
-            setImageUrl('');
-            setTags([]);
-            setFileId('');
-        }, 1000);
+        // Append tags manualy if they aren't in the form data naturally (react hook state)
+        // Actually we need to append them to the formData that is passed to the action OR just use the hidden input trick
+        // BUT since we are using `action={createPost}`, the formData is automatically created from fields.
+        // We can intercept it here if we used onClick, but simpler is to keep the hidden input for tags.
+
+        await createPost(formData);
+
+        // Reset form
+        setContent('');
+        setFile(null);
+        setTags([]);
+        setIsSubmitting(false);
+
+        // Reset file input manually if needed (not easily doable without ref, but simple state reset clears preview)
     };
 
     return (
@@ -71,7 +44,7 @@ export default function CreatePost() {
             <div className="card-body">
                 <h3 className="card-title text-sm opacity-70">Share something with the school...</h3>
 
-                <form action={createPost} onSubmit={handleSubmit}>
+                <form action={handleSubmit}>
                     <textarea
                         name="content"
                         className="textarea textarea-bordered w-full mb-4"
@@ -82,32 +55,21 @@ export default function CreatePost() {
                         rows={3}
                     ></textarea>
 
-                    <ImageKitContext
-                        urlEndpoint={process.env.NEXT_PUBLIC_URL_ENDPOINT}
-                        publicKey={process.env.NEXT_PUBLIC_PUBLIC_KEY}
-                        authenticator={authenticator}
-                    >
-                        <div className="mb-4">
-                            <IKUpload
-                                fileName="post-image.jpg"
-                                onSuccess={handleSuccess}
-                                onError={handleError}
-                                onUploadStart={handleUploadStart}
-                                className="file-input file-input-bordered file-input-sm w-full max-w-xs"
-                            />
-                            {uploading && <span className="loading loading-spinner loading-sm ml-2"></span>}
-                            {imageUrl && (
-                                <div className="mt-2 relative">
-                                    <img src={imageUrl} alt="Preview" className="h-20 w-20 object-cover rounded-lg" />
-                                    <button
-                                        type="button"
-                                        onClick={() => setImageUrl('')}
-                                        className="btn btn-xs btn-circle btn-ghost absolute -top-2 -right-2 bg-base-100"
-                                    >✕</button>
-                                </div>
-                            )}
-                        </div>
-                    </ImageKitContext>
+                    <div className="mb-4">
+                        <input
+                            type="file"
+                            name="file"
+                            accept="image/*"
+                            onChange={(e) => setFile(e.target.files[0])}
+                            className="file-input file-input-bordered file-input-sm w-full max-w-xs"
+                        />
+                        {file && (
+                            <div className="mt-2 relative">
+                                {/* Preview only works if we create object URL, skipping for simplicity or can add later */}
+                                <div className="text-xs opacity-70">Selected: {file.name}</div>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="flex flex-wrap gap-2 mb-4">
                         {availableTags.map(tag => (
@@ -122,13 +84,11 @@ export default function CreatePost() {
                         ))}
                     </div>
 
-                    <input type="hidden" name="imageUrl" value={imageUrl} />
-                    <input type="hidden" name="fileId" value={fileId} />
                     <input type="hidden" name="tags" value={JSON.stringify(tags)} />
 
                     <div className="card-actions justify-end">
-                        <button type="submit" className="btn btn-primary" disabled={uploading}>
-                            Post
+                        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                            {isSubmitting ? 'Posting...' : 'Post'}
                         </button>
                     </div>
                 </form>
