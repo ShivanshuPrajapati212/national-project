@@ -5,6 +5,8 @@
 
 The platform focuses on **role-based experiences**, ensuring that teachers have the tools to manage content while students can access resources and interact safely.
 
+### Live Link: https://l1746jr2.vercel.app
+
 ## 2. Technology Stack
 
 ### Core Frameworks
