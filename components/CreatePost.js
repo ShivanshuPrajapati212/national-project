@@ -91,7 +91,7 @@ export default function CreatePost({ defaultTag, lockedTag }) {
 
                     <div className="card-actions justify-end">
                         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                            {isSubmitting ? 'Posting...' : 'Post'}
+                            {isSubmitting ? <span className="loading loading-spinner"></span> : 'Post'}
                         </button>
                     </div>
                 </form>

@@ -9,6 +9,7 @@ import { addEvent } from "@/app/actions/event";
 
 export default function CalendarPage({ events, userRole }) {
     const [date, setDate] = useState(new Date());
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Helper to find events for a specific day
     const getEventsForDate = (d) => {
@@ -85,15 +86,19 @@ export default function CalendarPage({ events, userRole }) {
                         <div className="card bg-base-100 shadow-xl border-2 border-primary/20">
                             <div className="card-body">
                                 <h3 className="card-title text-sm uppercase tracking-wide text-primary">Add Event</h3>
-                                <form action={addEvent}>
+                                <form action={async (formData) => {
+                                    setIsSubmitting(true);
+                                    await addEvent(formData);
+                                    setIsSubmitting(false);
+                                }}>
                                     <input type="hidden" name="date" value={date.toISOString()} />
 
-                                    <div className="form-control mb-2">
+                                    <div className="form-control mb-2 flex justify-between">
                                         <label className="label"><span className="label-text">Title</span></label>
                                         <input type="text" name="title" className="input input-bordered" required />
                                     </div>
 
-                                    <div className="form-control mb-2">
+                                    <div className="form-control mb-2 flex justify-between">
                                         <label className="label"><span className="label-text">Type</span></label>
                                         <select name="type" className="select select-bordered" defaultValue="event">
                                             <option value="exam">Exam</option>
@@ -102,12 +107,14 @@ export default function CalendarPage({ events, userRole }) {
                                         </select>
                                     </div>
 
-                                    <div className="form-control mb-4">
+                                    <div className="form-control mb-4 flex justify-between">
                                         <label className="label"><span className="label-text">Description</span></label>
                                         <textarea name="description" className="textarea textarea-bordered"></textarea>
                                     </div>
 
-                                    <button type="submit" className="btn btn-primary w-full">Add to Calendar</button>
+                                    <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
+                                        {isSubmitting ? <span className="loading loading-spinner"></span> : 'Add to Calendar'}
+                                    </button>
                                 </form>
                             </div>
                         </div>

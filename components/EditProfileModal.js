@@ -51,7 +51,7 @@ export default function EditProfileModal({ user }) {
                         )}
 
                         <button type="submit" className="btn btn-primary w-full mt-4" disabled={isSubmitting}>
-                            {isSubmitting ? 'Saving...' : 'Save Changes'}
+                            {isSubmitting ? <span className="loading loading-spinner"></span> : 'Save Changes'}
                         </button>
                     </form>
                 </div>

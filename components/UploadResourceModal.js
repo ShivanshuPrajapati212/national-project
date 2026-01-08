@@ -1,11 +1,12 @@
 
 'use client'
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { uploadResource } from "@/app/actions/resource";
 
 export default function UploadResourceModal({ subjects }) {
     const modalRef = useRef(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     return (
         <>
@@ -20,7 +21,9 @@ export default function UploadResourceModal({ subjects }) {
                     </form>
                     <h3 className="font-bold text-lg mb-4">Upload New Resource</h3>
                     <form action={async (formData) => {
+                        setIsUploading(true);
                         await uploadResource(formData);
+                        setIsUploading(false);
                         modalRef.current?.close();
                     }}>
                         <div className="form-control mb-2">
@@ -41,7 +44,9 @@ export default function UploadResourceModal({ subjects }) {
                             <label className="label"><span className="label-text">File (PDF/Image)</span></label>
                             <input type="file" name="file" className="file-input file-input-bordered w-full" required />
                         </div>
-                        <button type="submit" className="btn btn-primary w-full">Upload</button>
+                        <button type="submit" className="btn btn-primary w-full" disabled={isUploading}>
+                            {isUploading ? <span className="loading loading-spinner"></span> : 'Upload'}
+                        </button>
                     </form>
                 </div>
             </dialog>
