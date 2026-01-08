@@ -4,10 +4,10 @@
 import { useState } from "react";
 import { createPost } from "@/app/actions/post";
 
-export default function CreatePost() {
+export default function CreatePost({ defaultTag, lockedTag }) {
     const [content, setContent] = useState('');
     const [file, setFile] = useState(null);
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState(defaultTag ? [defaultTag] : []);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const availableTags = ['#Announcement', '#Sports', '#Academics', '#Art', '#Fest', '#General'];
@@ -76,8 +76,11 @@ export default function CreatePost() {
                             <button
                                 key={tag}
                                 type="button"
-                                className={`badge ${tags.includes(tag) ? 'badge-primary' : 'badge-ghost'} cursor-pointer`}
-                                onClick={() => toggleTag(tag)}
+                                className={`badge ${tags.includes(tag) ? 'badge-primary' : 'badge-ghost'} ${lockedTag && tag === defaultTag ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}`}
+                                onClick={() => {
+                                    if (lockedTag && tag === defaultTag) return;
+                                    toggleTag(tag);
+                                }}
                             >
                                 {tag}
                             </button>

@@ -42,6 +42,7 @@ export default async function FeedPage({ searchParams }) {
                     <Link href="/feed" className="btn btn-ghost text-xl">School Network</Link>
                 </div>
                 <div className="flex-none gap-2">
+                    <Link href="/announcements" className="btn btn-ghost">📢</Link>
                     <Link href="/calendar" className="btn btn-ghost">Events</Link>
                     <Link href="/library" className="btn btn-ghost">Library</Link>
                     <Link href="/doubt-solver" className="btn btn-ghost text-primary">AI Helper</Link>
@@ -52,7 +53,7 @@ export default async function FeedPage({ searchParams }) {
                             </div>
                         </div>
                         <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                            <li><a>Profile</a></li>
+                            <li><Link href={`/profile/${session.user.id}`}>Profile</Link></li>
                             <li>
                                 <form action={async () => {
                                     'use server';

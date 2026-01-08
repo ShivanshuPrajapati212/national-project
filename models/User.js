@@ -12,6 +12,11 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please provide an email address for this user.'],
         unique: true,
     },
+    bio: {
+        type: String,
+        maxlength: [160, 'Bio cannot be more than 160 characters'],
+        default: '',
+    },
     image: {
         type: String,
     },
