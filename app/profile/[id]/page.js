@@ -76,7 +76,13 @@ export default async function ProfilePage({ params }) {
                                 )}
 
                                 <div className="flex gap-2 justify-center md:justify-start">
-                                    {isOwnProfile && <EditProfileModal user={profileUser} />}
+                                    {isOwnProfile ? (
+                                        <EditProfileModal user={profileUser} />
+                                    ) : (
+                                        <Link href={`/messages/${profileId}`} className="btn btn-primary btn-sm">
+                                            Message
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                         </div>

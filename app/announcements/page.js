@@ -38,6 +38,7 @@ export default async function AnnouncementsPage() {
                     <Link href="/feed" className="btn btn-ghost text-xl">School Network</Link>
                 </div>
                 <div className="flex-none gap-2">
+                    <Link href="/messages" className="btn btn-ghost" title="Messages">💬</Link>
                     <Link href="/feed" className="btn btn-ghost">Back to Feed</Link>
                 </div>
             </div>

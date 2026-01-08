@@ -42,6 +42,7 @@ export default async function FeedPage({ searchParams }) {
                     <Link href="/feed" className="btn btn-ghost text-xl">School Network</Link>
                 </div>
                 <div className="flex-none gap-2">
+                    <Link href="/messages" className="btn btn-ghost" title="Messages">💬</Link>
                     <Link href="/announcements" className="btn btn-ghost">📢</Link>
                     <Link href="/calendar" className="btn btn-ghost">Events</Link>
                     <Link href="/library" className="btn btn-ghost">Library</Link>
@@ -98,21 +99,31 @@ export default async function FeedPage({ searchParams }) {
                             <div key={post._id} className="card bg-base-100 shadow-md">
                                 <div className="card-body">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="avatar">
-                                            <div className="w-10 rounded-full">
-                                                <img src={post.author.image || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
+                                        <div className="dropdown dropdown-hover">
+                                            <div tabIndex={0} role="button" className="flex items-center gap-3 cursor-pointer group">
+                                                <div className="avatar group-hover:ring group-hover:ring-primary group-hover:ring-offset-2 transition-all rounded-full">
+                                                    <div className="w-10 rounded-full">
+                                                        <img src={post.author.image || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold flex items-center gap-2 group-hover:text-primary transition-colors">
+                                                        {post.author.name}
+                                                        <span className={`badge badge-sm ${post.author.role === 'teacher' ? 'badge-primary' :
+                                                            post.author.role === 'parent' ? 'badge-secondary' : 'badge-ghost'
+                                                            }`}>
+                                                            {post.author.role}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-xs opacity-50 capitalize font-normal text-base-content">{new Date(post.createdAt).toLocaleDateString()}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <div className="font-bold flex items-center gap-2">
-                                                {post.author.name}
-                                                <span className={`badge badge-sm ${post.author.role === 'teacher' ? 'badge-primary' :
-                                                    post.author.role === 'parent' ? 'badge-secondary' : 'badge-ghost'
-                                                    }`}>
-                                                    {post.author.role}
-                                                </span>
-                                            </div>
-                                            <div className="text-xs opacity-50 capitalize">{new Date(post.createdAt).toLocaleDateString()}</div>
+                                            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                                <li><Link href={`/profile/${post.author._id}`}>View Profile</Link></li>
+                                                {session.user.id !== post.author._id && (
+                                                    <li><Link href={`/messages/${post.author._id}`}>Message</Link></li>
+                                                )}
+                                            </ul>
                                         </div>
                                     </div>
 
