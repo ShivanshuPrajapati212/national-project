@@ -44,6 +44,7 @@ export default async function FeedPage({ searchParams }) {
                 <div className="flex-none gap-2">
                     <Link href="/calendar" className="btn btn-ghost">Events</Link>
                     <Link href="/library" className="btn btn-ghost">Library</Link>
+                    <Link href="/doubt-solver" className="btn btn-ghost text-primary">AI Helper</Link>
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
