@@ -86,10 +86,17 @@ export default function CalendarPage({ events, userRole }) {
                         <div className="card bg-base-100 shadow-xl border-2 border-primary/20">
                             <div className="card-body">
                                 <h3 className="card-title text-sm uppercase tracking-wide text-primary">Add Event</h3>
-                                <form action={async (formData) => {
+                                <form onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    if (isSubmitting) return;
                                     setIsSubmitting(true);
-                                    await addEvent(formData);
-                                    setIsSubmitting(false);
+                                    try {
+                                        const formData = new FormData(e.currentTarget);
+                                        await addEvent(formData);
+                                        e.currentTarget.reset();
+                                    } finally {
+                                        setIsSubmitting(false);
+                                    }
                                 }}>
                                     <input type="hidden" name="date" value={date.toISOString()} />
 

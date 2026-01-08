@@ -20,23 +20,23 @@ export default function CreatePost({ defaultTag, lockedTag }) {
         }
     };
 
-    const handleSubmit = async (formData) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (isSubmitting) return;
         setIsSubmitting(true);
 
-        // Append tags manualy if they aren't in the form data naturally (react hook state)
-        // Actually we need to append them to the formData that is passed to the action OR just use the hidden input trick
-        // BUT since we are using `action={createPost}`, the formData is automatically created from fields.
-        // We can intercept it here if we used onClick, but simpler is to keep the hidden input for tags.
+        try {
+            const formData = new FormData(e.currentTarget);
+            await createPost(formData);
 
-        await createPost(formData);
-
-        // Reset form
-        setContent('');
-        setFile(null);
-        setTags([]);
-        setIsSubmitting(false);
-
-        // Reset file input manually if needed (not easily doable without ref, but simple state reset clears preview)
+            // Reset form
+            setContent('');
+            setFile(null);
+            setTags([]);
+            e.target.reset();
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -44,7 +44,7 @@ export default function CreatePost({ defaultTag, lockedTag }) {
             <div className="card-body">
                 <h3 className="card-title text-sm opacity-70">Share something with the school...</h3>
 
-                <form action={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <textarea
                         name="content"
                         className="textarea textarea-bordered w-full mb-4"
@@ -65,7 +65,6 @@ export default function CreatePost({ defaultTag, lockedTag }) {
                         />
                         {file && (
                             <div className="mt-2 relative">
-                                {/* Preview only works if we create object URL, skipping for simplicity or can add later */}
                                 <div className="text-xs opacity-70">Selected: {file.name}</div>
                             </div>
                         )}

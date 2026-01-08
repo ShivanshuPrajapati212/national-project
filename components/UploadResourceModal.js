@@ -20,11 +20,17 @@ export default function UploadResourceModal({ subjects }) {
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <h3 className="font-bold text-lg mb-4">Upload New Resource</h3>
-                    <form action={async (formData) => {
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (isUploading) return;
                         setIsUploading(true);
-                        await uploadResource(formData);
-                        setIsUploading(false);
-                        modalRef.current?.close();
+                        try {
+                            const formData = new FormData(e.currentTarget);
+                            await uploadResource(formData);
+                            modalRef.current?.close();
+                        } finally {
+                            setIsUploading(false);
+                        }
                     }}>
                         <div className="form-control mb-2">
                             <label className="label"><span className="label-text">Title</span></label>

@@ -13,9 +13,12 @@ export default function ChatInput({ recipientId }) {
             if (!content || !content.trim()) return;
 
             setIsSending(true);
-            await sendMessage(recipientId, content);
-            setIsSending(false);
-            formRef.current?.reset();
+            try {
+                await sendMessage(recipientId, content);
+                formRef.current?.reset();
+            } finally {
+                setIsSending(false);
+            }
         }} className="flex gap-2" ref={formRef}>
             <input
                 type="text"

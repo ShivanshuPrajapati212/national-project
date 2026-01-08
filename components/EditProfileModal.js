@@ -22,9 +22,12 @@ export default function EditProfileModal({ user }) {
 
                     <form action={async (formData) => {
                         setIsSubmitting(true);
-                        await updateProfile(formData);
-                        setIsSubmitting(false);
-                        modalRef.current?.close();
+                        try {
+                            await updateProfile(formData);
+                            modalRef.current?.close();
+                        } finally {
+                            setIsSubmitting(false);
+                        }
                     }}>
                         <div className="form-control mb-2">
                             <label className="label"><span className="label-text">Name</span></label>
