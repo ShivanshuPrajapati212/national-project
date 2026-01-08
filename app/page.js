@@ -149,16 +149,11 @@ export default async function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="footer items-center p-10 bg-base-300 text-base-content">
+      <footer className="footer items-center p-5 bg-base-300 text-base-content">
         <aside className="items-center grid-flow-col">
           <div className="text-2xl mr-2">🏫</div>
-          <p>Copyright © 2026 - All right reserved by School Network Industries Ltd</p>
+          <p>Copyright © 2026 - All right reserved by L1746JR2</p>
         </aside>
-        <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
-          <a className="link link-hover">Privacy</a>
-          <a className="link link-hover">Terms</a>
-          <a className="link link-hover">Contact</a>
-        </nav>
       </footer>
     </div>
   );
