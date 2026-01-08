@@ -10,7 +10,6 @@ export const authConfig = {
     ],
     pages: {
         signIn: '/login',
-        newUser: '/onboarding'
     },
     callbacks: {
         // Authorized callback is used by the Middleware

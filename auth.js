@@ -30,19 +30,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
             return true;
         },
-        async session({ session }) {
-            if (session.user) {
+        async jwt({ token, user }) {
+            if (user) {
                 try {
                     await dbConnect();
-                    const dbUser = await User.findOne({ email: session.user.email });
+                    const dbUser = await User.findOne({ email: user.email });
                     if (dbUser) {
-                        session.user.id = dbUser._id.toString();
-                        session.user.role = dbUser.role;
-                        session.user.class = dbUser.class;
-                        session.user.section = dbUser.section;
+                        token.id = dbUser._id.toString();
+                        token.role = dbUser.role;
+                        token.class = dbUser.class;
+                        token.section = dbUser.section;
                     }
                 } catch (error) {
-                    console.error('Error fetching user for session:', error);
+                    console.error('Error in jwt callback:', error);
+                }
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                if (token?.role) {
+                    session.user.id = token.id;
+                    session.user.role = token.role;
+                    session.user.class = token.class;
+                    session.user.section = token.section;
+                } else {
+                    // Fallback to DB if token doesn't have role (e.g. session strategy or fresh db update needed)
+                    try {
+                        await dbConnect();
+                        const dbUser = await User.findOne({ email: session.user.email });
+                        if (dbUser) {
+                            session.user.id = dbUser._id.toString();
+                            session.user.role = dbUser.role;
+                            session.user.class = dbUser.class;
+                            session.user.section = dbUser.section;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user for session:', error);
+                    }
                 }
             }
             return session;

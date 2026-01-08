@@ -42,7 +42,8 @@ export default async function FeedPage({ searchParams }) {
                     <Link href="/feed" className="btn btn-ghost text-xl">School Network</Link>
                 </div>
                 <div className="flex-none gap-2">
-                    <Link href="/calendar" className="btn btn-ghost">Calendar</Link>
+                    <Link href="/calendar" className="btn btn-ghost">Events</Link>
+                    <Link href="/library" className="btn btn-ghost">Library</Link>
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
@@ -72,6 +73,7 @@ export default async function FeedPage({ searchParams }) {
                             <h3 className="font-bold mb-2">Filters</h3>
                             <ul className="menu bg-base-100 w-full p-0 [&_li>*]:rounded-none">
                                 <li><Link href="/feed" className={!tag ? 'active' : ''}>All Posts</Link></li>
+                                <li><Link href="/feed?tag=%23Announcement" className={tag === '#Announcement' ? 'active' : ''}>#Announcement</Link></li>
                                 <li><Link href="/feed?tag=%23Sports" className={tag === '#Sports' ? 'active' : ''}>#Sports</Link></li>
                                 <li><Link href="/feed?tag=%23Academics" className={tag === '#Academics' ? 'active' : ''}>#Academics</Link></li>
                                 <li><Link href="/feed?tag=%23Art" className={tag === '#Art' ? 'active' : ''}>#Art</Link></li>
@@ -100,8 +102,15 @@ export default async function FeedPage({ searchParams }) {
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="font-bold">{post.author.name}</div>
-                                            <div className="text-xs opacity-50 capitalize">{post.author.role} • {new Date(post.createdAt).toLocaleDateString()}</div>
+                                            <div className="font-bold flex items-center gap-2">
+                                                {post.author.name}
+                                                <span className={`badge badge-sm ${post.author.role === 'teacher' ? 'badge-primary' :
+                                                    post.author.role === 'parent' ? 'badge-secondary' : 'badge-ghost'
+                                                    }`}>
+                                                    {post.author.role}
+                                                </span>
+                                            </div>
+                                            <div className="text-xs opacity-50 capitalize">{new Date(post.createdAt).toLocaleDateString()}</div>
                                         </div>
                                     </div>
 

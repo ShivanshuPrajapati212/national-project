@@ -10,7 +10,7 @@ export default function CreatePost() {
     const [tags, setTags] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const availableTags = ['#Sports', '#Academics', '#Art', '#Fest', '#General'];
+    const availableTags = ['#Announcement', '#Sports', '#Academics', '#Art', '#Fest', '#General'];
 
     const toggleTag = (tag) => {
         if (tags.includes(tag)) {
